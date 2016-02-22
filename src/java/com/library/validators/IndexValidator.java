@@ -22,6 +22,7 @@ public class IndexValidator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        System.out.println(value);
         if(value.toString().length()<5){
            ResourceBundle bundle = ResourceBundle.getBundle("com.library.properties.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
            FacesMessage facesMessage = new FacesMessage(bundle.getString("min_mength"));
