@@ -22,21 +22,35 @@ and open the template in the editor.
                 <h3>#{msg.welcome_title}</h3>
             </div>
             <div class="welcome">
-                <h5>#{msg.welcome}</h5>
-                <h6>#{msg.exit}</h6>
+               
+                <h:form>
+                     <h5>#{msg.welcome}, #{user.name}</h5>
+                    <h:commandLink action="#{loginController.exit()}" value="#{msg.exit}"/>
+                    
+                </h:form>
             </div>
             <div class="search_div">
                 <h:form styleClass="search_form">
-                    <h:inputText id="search_request" styleClass="search_string">
+                    <h:inputText id="search_request" styleClass="search_string" value='#{searchController.searchString}'>
                         
                     </h:inputText>
-                    <h:commandButton action="#" styleClass="search_button" value="#{msg.search}"/>
+                    <h:commandButton action="#{searchController.fillBooksBySearch()}" styleClass="search_button" value="#{msg.search}"/>
                     <h:selectOneMenu value="#{searchController.searchType}">
                         <f:selectItems value="${searchController.searchList}"/>
                     </h:selectOneMenu>
                 </h:form>
-            </div>    
+
+            </div>   
             
+            <div class="letters">
+                <h:form>
+                    <ui:repeat value="#{searchController.russianLetters}" var="letter">
+                        <h:commandLink action="#{searchController.fillBooksByLetter()}" value='#{letter}'>
+                            <f:param name="letter" value="#{letter}"/>
+                        </h:commandLink>
+                    </ui:repeat>
+                </h:form>
+            </div>
         </ui:composition>
     </h:body>
 </html>
