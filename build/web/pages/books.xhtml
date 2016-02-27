@@ -7,14 +7,48 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>TODO supply a title</title>
         <h:outputStylesheet library="css" name="style_main.css"  />
     </h:head>
     <h:body>
         <ui:composition template="/templates/main_template.xhtml">
-            
+            <ui:define name="title">
+                #{msg.book_list}
+            </ui:define> 
+            <ui:define name="content">
+                <p><strong>#{msg.book_count} #{searchController.totalBookNumber}</strong></p>
+                <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1 col2 col3">
+                    <h:column>
+                        <div class='book_image'>
+                            <h:graphicImage value="/ImageServlet?book_id=#{b.bookId}" height="160" width="120"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>
+                        <div class='book_info'>
+                            <p> <a href="#{facesContext.externalContext.applicationContextPath}/ContentServlet?book_id=#{b.bookId}">#{b.name}</a></p>
+                            <p><strong>#{msg.searh_author}:</strong> #{b.author}</p>
+                            <p><strong>#{msg.page_count}: </strong>#{b.pageCount}</p>
+                            <p><strong>ISBN: #{b.isbn}</strong></p>
+                            <p><strong>#{msg.publish_date}: </strong>#{b.publishDate}</p>
+                            <p><strong>#{msg.publisher}: </strong>#{b.publisher}</p>
+                            <p><strong>#{msg.genre}:</strong> #{b.genre}</p> 
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div class='book_details'>
+                            <p><strong>#{msg.description}</strong></p>
+                            <p>#{b.description}</p>
+                        </div>
+                    </h:column>
+                </h:dataTable>
+                
+                
+                
+            </ui:define>
         </ui:composition>
     </h:body>
 </html>

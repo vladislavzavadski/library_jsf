@@ -28,7 +28,9 @@ and open the template in the editor.
                         <f:validator validatorId="com.library.validators.IndexValidator"/>
                         
                     </h:inputText>
-                    <h:commandButton action="pages/books?faces-redirect=true" value="#{msg.enter}"/>
+                    <h:commandButton action="pages/books?faces-redirect=true" value="#{msg.enter}">
+                       
+                    </h:commandButton>
                     <p><h:message for="username" styleClass="error"/></p>
                 </h:form>
             </div>  

@@ -22,7 +22,7 @@ and open the template in the editor.
                 <h3>#{msg.welcome_title}</h3>
             </div>
             <div class="welcome">
-               
+
                 <h:form>
                      <h5>#{msg.welcome}, #{user.name}</h5>
                     <h:commandLink action="#{loginController.exit()}" value="#{msg.exit}"/>
@@ -45,7 +45,7 @@ and open the template in the editor.
             <div class="letters">
                 <h:form>
                     <ui:repeat value="#{searchController.russianLetters}" var="letter">
-                        <h:commandLink action="#{searchController.fillBooksByLetter()}" value='#{letter}'>
+                        <h:commandLink action="#{searchController.fillBooksByLetter()}" value='#{letter}' styleClass="#{searchController.currentLetter.charAt(0)==letter?'selected_letter':''}">
                             <f:param name="letter" value="#{letter}"/>
                         </h:commandLink>
                     </ui:repeat>
