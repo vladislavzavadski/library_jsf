@@ -18,12 +18,14 @@ and open the template in the editor.
         <ui:composition>
                <div class="pager">
                     
-                   <h:form rendered="#{searchController.totalBookNumber>searchController.booksOnPage}">
+                   <h:form  rendered="#{searchController.totalBookNumber>searchController.booksOnPage}">
                        #{msg.pages}
                         <ui:repeat value="#{searchController.pageNumber}" var="page">
-                            <h:commandLink action="#{searchController.showPage()}" value="#{page}" styleClass="#{page==searchController.currentPageNumber?'selected_page':''}" >
+                            <h:commandLink   value="#{page}" styleClass="#{page==searchController.currentPageNumber?'selected_page':''}" >
                                 <f:param name="page_number" value="#{page}"/>
+                                <f:ajax event="click" render=":genre_ff :book_list :booksCount :let_menu :pages1 :pages2 :search_ff" listener="#{searchController.showPage()}"/>
                             </h:commandLink>
+                            
                         </ui:repeat>
                     </h:form>
                     

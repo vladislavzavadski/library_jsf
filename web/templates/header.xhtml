@@ -30,23 +30,25 @@ and open the template in the editor.
                 </h:form>
             </div>
             <div class="search_div">
-                <h:form styleClass="search_form">
+                <h:form styleClass="search_form" id="search_ff">
                     <h:inputText id="search_request" styleClass="search_string" value='#{searchController.searchString}'>
                         
                     </h:inputText>
-                    <h:commandButton action="#{searchController.fillBooksBySearch()}" styleClass="search_button" value="#{msg.search}"/>
+                    <h:commandButton id="search_button" styleClass="search_button" value="#{msg.search}"/>
                     <h:selectOneMenu value="#{searchController.searchType}">
                         <f:selectItems value="${searchController.searchList}"/>
                     </h:selectOneMenu>
+                    <f:ajax event="click" execute="search_button" render=":book_list :booksCount :genre_ff :pages1 :pages2 :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
                 </h:form>
 
             </div>   
             
             <div class="letters">
-                <h:form>
+                <h:form id="let_menu">
                     <ui:repeat value="#{searchController.russianLetters}" var="letter">
-                        <h:commandLink action="#{searchController.fillBooksByLetter()}" value='#{letter}' styleClass="#{searchController.currentLetter.charAt(0)==letter?'selected_letter':''}">
+                        <h:commandLink value='#{letter}' styleClass="#{searchController.currentLetter.charAt(0)==letter?'selected_letter':''}">
                             <f:param name="letter" value="#{letter}"/>
+                            <f:ajax event="click" render="let_menu :book_list :booksCount :genre_ff :pages1 :pages2 :search_ff" listener="#{searchController.fillBooksByLetter()}"/>
                         </h:commandLink>
                     </ui:repeat>
                 </h:form>

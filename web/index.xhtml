@@ -26,12 +26,12 @@ and open the template in the editor.
                 <h:form styleClass="login_form">
                     #{msg.name}<h:inputText id="username" value="#{user.name}" required="true" requiredMessage="#{msg.empty_field}">
                         <f:validator validatorId="com.library.validators.IndexValidator"/>
-                        
+                        <f:ajax event="keyup" render="loginError"/>
                     </h:inputText>
                     <h:commandButton action="pages/books?faces-redirect=true" value="#{msg.enter}">
                        
                     </h:commandButton>
-                    <p><h:message for="username" styleClass="error"/></p>
+                    <p><h:message id="loginError" for="username" styleClass="error"/></p>
                 </h:form>
             </div>  
             <div class="footer">

@@ -22,23 +22,34 @@ and open the template in the editor.
             </ui:insert>            
         </div>
             <div class="middle">
-
+                <h:panelGroup id="genre_ff2">
                 <div class="left_menu">
                     <ui:insert name="left_menu">
                         <ui:include src="/templates/left_menu.xhtml"/>
                     </ui:insert>                 
                 </div>
-
+                </h:panelGroup>    
                 <div class="content">
-                <ui:insert name="page_navigation">
-                     <ui:include src="/templates/page_navigation.xhtml"/>
-                </ui:insert>                    
+                    
+                    
+                    <h:panelGroup id="pages1">    
+                        <ui:insert name="page_navigation">
+                            <ui:include src="/templates/page_navigation.xhtml"/>
+                        </ui:insert>
+                    </h:panelGroup>
+                    
+                    
+                    
                     <ui:insert name="content">
                         <ui:include src="/templates/content.xhtml"/>
-                    </ui:insert>  
-                <ui:insert name="page_navigation">
-                     <ui:include src="/templates/page_navigation.xhtml"/>
-                </ui:insert>
+                    </ui:insert> 
+                    
+                    <h:panelGroup id="pages2">
+                        <ui:insert name="page_navigation">
+                           <ui:include src="/templates/page_navigation.xhtml"/>
+                         </ui:insert>
+                    </h:panelGroup>
+                    
                 </div>
 
                 <div style="clear: both;">&nbsp;</div>

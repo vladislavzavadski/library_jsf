@@ -19,8 +19,10 @@ and open the template in the editor.
                 #{msg.book_list}
             </ui:define> 
             <ui:define name="content">
-                <p><strong>#{msg.book_count} #{searchController.totalBookNumber}</strong></p>
-                <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1 col2 col3">
+                <p><strong>
+                        <h:outputText value="#{msg.book_count} #{searchController.totalBookNumber}" id="booksCount"/>
+                    </strong></p>
+                <h:dataTable id="book_list" value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1 col2 col3">
                     <h:column>
                         <div class='book_image'>
                             <h:graphicImage value="/ImageServlet?book_id=#{b.bookId}" height="160" width="120"/>
