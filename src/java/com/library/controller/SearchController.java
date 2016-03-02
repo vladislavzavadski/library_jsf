@@ -29,10 +29,9 @@ import javax.naming.NamingException;
  */
 @ManagedBean(eager = true)
 @SessionScoped
-public class SearchController implements Serializable {
-    private SearchType searchType;
+public class SearchController implements Serializable {    
     private String searchString;
-    private static Map<String, SearchType> searchList = new HashMap<>();
+    private SearchType searchType;
     private ArrayList<Book> currentBookList;
     private ArrayList<Integer> pageNumber;
     private int booksOnPage = 2;
@@ -54,19 +53,13 @@ public class SearchController implements Serializable {
     public SearchController(){
         this.fillBooksAll();
         currentLetter = " ";
-        ResourceBundle bundle = ResourceBundle.getBundle("com.library.properties.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-        searchList.put(bundle.getString("search_author"), SearchType.Author);
-        searchList.put(bundle.getString("search_name"), SearchType.Name);
+
     }
 
     public SearchType getSearchType() {
         return searchType;
     }
-
-    public Map<String, SearchType> getSearchList() {
-        return searchList;
-    }
-    
+   
     public void setSearchType(SearchType st){
         this.searchType = st;
     }

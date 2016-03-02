@@ -24,6 +24,17 @@ and open the template in the editor.
             <div class="welcome">
 
                 <h:form>
+                    
+                    <p> 
+                    <h:commandLink action='#{localeChanger.setLocale("en")}'>
+                        <h:graphicImage library="images" name="en.png" width="20"/> 
+                    </h:commandLink>
+                        
+                    <h:commandLink action='#{localeChanger.setLocale("ru")}'>
+                        <h:graphicImage library="images" name="ru.png" width="20"/> 
+                    </h:commandLink>    
+                    </p>
+                    
                      <h5>#{msg.welcome}, #{user.name}</h5>
                     <h:commandLink action="#{loginController.exit()}" value="#{msg.exit}"/>
                     
@@ -32,14 +43,15 @@ and open the template in the editor.
             <div class="search_div">
                 <h:form styleClass="search_form" id="search_ff">
                     <h:inputText id="search_request" styleClass="search_string" value='#{searchController.searchString}'>
-                        
+                        <f:ajax event="change"/>
                     </h:inputText>
                     <h:commandButton id="search_button" styleClass="search_button" value="#{msg.search}"/>
                     <h:selectOneMenu value="#{searchController.searchType}">
-                        <f:selectItems value="${searchController.searchList}"/>
+                        <f:selectItems value="${searchTypeController.searchList}"/>
                     </h:selectOneMenu>
                     <f:ajax event="click" execute="search_button" render=":book_list :booksCount :genre_ff :pages1 :pages2 :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
                 </h:form>
+               
 
             </div>   
             

@@ -19,7 +19,6 @@ public class LoginController {
     public LoginController(){}
     public String exit(){
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        //FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath();
         return "exit";
     }
 }
