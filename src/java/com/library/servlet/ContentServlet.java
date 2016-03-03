@@ -8,6 +8,7 @@ package com.library.servlet;
 import com.library.controller.SearchController;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -32,9 +33,13 @@ public class ContentServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/pdf");
+        response.setCharacterEncoding("utf-8");
         ServletOutputStream sos = response.getOutputStream();
         SearchController searchController = (SearchController)request.getSession(false).getAttribute("searchController");
         byte[] pdf = searchController.getPdf(Integer.parseInt(request.getParameter("book_id")));
+        if(request.getParameter("download").equals("true")){
+            response.addHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode(request.getParameter("book_name"), "UTF-8")+".pdf");
+        }
         response.setContentLength(pdf.length);
         sos.write(pdf);
     }
