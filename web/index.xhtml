@@ -10,24 +10,13 @@ and open the template in the editor.
           
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    
     <h:head>
         <title>#{msg.title}</title>
         <h:outputStylesheet library="css" name="style_index.css"  />
     </h:head>
     <h:body>
-        <f:view locale="#{localeChanger.locale}">
+        
         <div class="main">
-            <p><h:form>
-                    <h:commandLink action='#{localeChanger.setLocale("en")}'>
-                    <h:graphicImage library="images" name="en.png"/>
-                </h:commandLink>
-                    
-                    <h:commandLink action='#{localeChanger.setLocale("ru")}'>
-                    <h:graphicImage library="images" name="ru.png"/>
-                </h:commandLink>    
-            </h:form>
-            </p>
             <div class="content">
                 <p class="title"><h:graphicImage library="images" name="lib.png"/></p>
                 <p class="title">#{msg.title}</p>
@@ -49,7 +38,6 @@ and open the template in the editor.
             #{msg.footer}
         </div>
         </div>
-    </f:view>        
+
     </h:body>
-        
 </html>

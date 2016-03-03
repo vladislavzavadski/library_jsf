@@ -32,25 +32,13 @@ and open the template in the editor.
                     
                     <h:column>
                         <div class='book_info'>
-                            <p> <h:outputLink value="#{request.contextPath}/ContentServlet">
-                                    <h:outputText value="#{b.name}"/>
-                                    <f:param name="download" value="false"/>
-                                    <f:param name="book_id" value="#{b.bookId}"/>
-                                   
-                                </h:outputLink></p>
+                            <p> <a href="#{facesContext.externalContext.applicationContextPath}/ContentServlet?book_id=#{b.bookId}">#{b.name}</a></p>
                             <p><strong>#{msg.searh_author}:</strong> #{b.author}</p>
                             <p><strong>#{msg.page_count}: </strong>#{b.pageCount}</p>
                             <p><strong>ISBN: #{b.isbn}</strong></p>
                             <p><strong>#{msg.publish_date}: </strong>#{b.publishDate}</p>
                             <p><strong>#{msg.publisher}: </strong>#{b.publisher}</p>
                             <p><strong>#{msg.genre}:</strong> #{b.genre}</p> 
-                            <p><h:outputLink value="#{request.contextPath}/ContentServlet" target="_blank">
-                                    <h:outputText value="#{msg.download}"/>
-                                    <f:param name="book_id" value="#{b.bookId}"/>
-                                    <f:param name="download" value="true"/>
-                                    <f:param name="book_name" value="#{b.name}"/>
-                            </h:outputLink>
-                            </p>
                         </div>
                     </h:column>
                     <h:column>
