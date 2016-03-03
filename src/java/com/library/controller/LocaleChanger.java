@@ -8,9 +8,7 @@ package com.library.controller;
 import java.io.Serializable;
 import java.util.Locale;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 
 /**
  *
@@ -22,7 +20,7 @@ public class LocaleChanger implements Serializable {
     private Locale locale;
 
     public LocaleChanger() {
-        locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+        locale = new Locale("ru");
     }
 
     public Locale getLocale() {
