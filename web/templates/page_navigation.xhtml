@@ -23,7 +23,7 @@ and open the template in the editor.
                         <ui:repeat value="#{searchController.pageNumber}" var="page">
                             <h:commandLink   value="#{page}" styleClass="#{page==searchController.currentPageNumber?'selected_page':''}" >
                                 <f:param name="page_number" value="#{page}"/>
-                                <f:ajax event="click" render=":genre_ff :book_list :booksCount :let_menu :pages1 :pages2 :search_ff" listener="#{searchController.showPage()}"/>
+                                <f:ajax event="click" render=":genre_ff :book_view:book_list :booksCount :let_menu :pages1 :pages2 :search_ff" listener="#{searchController.showPage()}"/>
                             </h:commandLink>
                             
                         </ui:repeat>

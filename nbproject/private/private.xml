@@ -5,10 +5,9 @@
         <group>
             <file>file:/D:/Google%20drive/temp/library_jsf/src/java/com/library/controller/SearchController.java</file>
             <file>file:/D:/Google%20drive/temp/library_jsf/web/index.xhtml</file>
-            <file>file:/D:/Google%20drive/temp/library_jsf/src/java/com/library/servlet/ContentServlet.java</file>
+            <file>file:/D:/Google%20drive/temp/library_jsf/src/java/com/library/usebean/User.java</file>
             <file>file:/D:/Google%20drive/temp/library_jsf/web/pages/books.xhtml</file>
-            <file>file:/D:/Google%20drive/temp/library_jsf/web/templates/main_template.xhtml</file>
-            <file>file:/D:/Google%20drive/temp/library_jsf/src/java/com/library/controller/LocaleChanger.java</file>
+            <file>file:/D:/Google%20drive/temp/library_jsf/web/templates/header.xhtml</file>
         </group>
     </open-files>
 </project-private>

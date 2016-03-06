@@ -35,7 +35,8 @@ and open the template in the editor.
             <div class="login_div">
                 <p class="title">#{msg.inp_info}</p>
                 <h:form styleClass="login_form">
-                    #{msg.name}<h:inputText id="username" value="#{user.name}" required="true" requiredMessage="#{msg.empty_field}">
+                    #{msg.name}
+                    <h:inputText id="username" value="#{user.name}" required="true" requiredMessage="#{msg.empty_field}">
                         <f:validator validatorId="com.library.validators.IndexValidator"/>
                         <f:ajax event="keyup" render="loginError"/>
                     </h:inputText>

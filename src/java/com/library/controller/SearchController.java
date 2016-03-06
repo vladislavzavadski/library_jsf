@@ -9,14 +9,13 @@ import com.library.database.Database;
 import com.library.enums.SearchType;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import com.library.usebean.Book;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,6 +38,34 @@ public class SearchController implements Serializable {
     private int currentGenre = -1;
     private String currentLetter = " ";
     private String lastSqlQuery;
+    private boolean editMode;
+    private String name;
+    private int checkedBooks;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public boolean isEditMode() {
+        return editMode;
+    }
+    
+    public void switchEdit(){
+        editMode=!editMode;
+    }
+    
+    public void changeBookCheck(boolean flag){
+      // Map<String, String> map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+       if(flag){
+           checkedBooks++;
+       }
+       else{
+           checkedBooks--;
+       }
+    }
+    
     public int getBooksOnPage() {
         return booksOnPage;
     }
@@ -52,8 +79,17 @@ public class SearchController implements Serializable {
     }
     public SearchController(){
         this.fillBooksAll();
+        editMode=false;
         currentLetter = " ";
+        checkedBooks=0;
+    }
 
+    public void setCheckedBooks(int checkedBooks) {
+        this.checkedBooks = checkedBooks;
+    }
+
+    public int getCheckedBooks() {
+        return checkedBooks;
     }
 
     public SearchType getSearchType() {
@@ -291,9 +327,51 @@ public class SearchController implements Serializable {
         return searchString;
     }
     
+    public void saveBookChanges(){
+        PreparedStatement prepStmt = null;
+        Connection conn=null;
+        
+        try{
+           conn=Database.getConnection();
+           prepStmt = conn.prepareStatement("update book set name=?, isbn=?, page_count=?, publish_year=?, descr=? where id=?");
+           for(Book book: currentBookList){
+                prepStmt.setString(1, book.getName());
+                prepStmt.setString(2, book.getIsbn());
+                prepStmt.setString(1, book.getName());
+                prepStmt.setString(2, book.getIsbn());
+//                prepStmt.setString(3, book.getAuthor());
+                prepStmt.setInt(3, book.getPageCount());
+                prepStmt.setInt(4, book.getPublishDate());
+//                prepStmt.setString(6, book.getPublisher());
+                prepStmt.setString(5, book.getDescription());
+                prepStmt.setLong(6, book.getBookId());
+                prepStmt.addBatch();               
+           }
+           prepStmt.executeBatch();
+        } catch (NamingException | SQLException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try {
+                if (prepStmt != null) {
+                    prepStmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        this.switchEdit();
+            
+       
+    }
+    
     public void showPage(){
         Map<String, String> params= FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         currentPageNumber = Integer.parseInt(params.get("page_number"));
+        checkedBooks=0;
         fillBooksBySQL(lastSqlQuery);
     }
 }

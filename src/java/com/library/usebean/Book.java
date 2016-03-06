@@ -21,6 +21,7 @@ public class Book {
     private int publishDate;
     private String publisher;
     private String description;
+    private boolean isBookChecked;
     private byte[] image;
 
     public Book(long bookId, String name, int pageCount, String isbn, String genreId, String authorId, int publishDate, String publisherId, byte[] image, String description) {
@@ -34,6 +35,15 @@ public class Book {
         this.publisher = publisherId;
         this.image = image;
         this.description = description;
+        isBookChecked=false;
+    }
+
+    public void setIsBookChecked(boolean isBookChecked) {
+        this.isBookChecked = isBookChecked;
+    }
+
+    public boolean isIsBookChecked() {
+        return isBookChecked;
     }
 
     public void setDescription(String description) {

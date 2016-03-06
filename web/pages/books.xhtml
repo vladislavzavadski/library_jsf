@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+    -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>TODO supply a title</title>
         <h:outputStylesheet library="css" name="style_main.css"  />
@@ -18,51 +17,124 @@ and open the template in the editor.
         <ui:composition template="/templates/main_template.xhtml">
             <ui:define name="title">
                 #{msg.book_list}
-            </ui:define> 
+            </ui:define>
             <ui:define name="content">
-                <p><strong>
+                <p>
+                    <strong>
                         <h:outputText value="#{msg.book_count} #{searchController.totalBookNumber}" id="booksCount"/>
-                    </strong></p>
-                <h:dataTable id="book_list" value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1 col2 col3">
+                    </strong>
+                </p>
+                <h:form id="book_view">
+                    <h:panelGroup id="admin_tools">
+                        
+                        <h:commandLink rendered="#{!searchController.editMode}">
+                             <h:graphicImage library="images" name="en.png"/>
+                             <h:outputText value="#{msg.add}"/> 
+                        </h:commandLink>
+                        
+                        <h:commandButton rendered="#{searchController.editMode}" value="#{msg.save}">
+                            <f:ajax execute="@form" render="@form" listener="#{searchController.saveBookChanges()}"/>
+                        </h:commandButton>    
+                            
+                          
+                        <h:commandLink rendered="#{!searchController.editMode and searchController.checkedBooks>0}">
+                               <h:graphicImage library="images" name="ru.png"/>
+                               <h:outputText value="#{msg.edit}"/>
+                               <f:ajax render="@form" listener="#{searchController.switchEdit()}"/>
+                        </h:commandLink>
+                   
+                        <h:commandButton immediate="false" rendered="#{searchController.editMode}" value="#{msg.cancel}">
+                            <f:ajax render="@form" listener="#{searchController.switchEdit()}"/>
+                        </h:commandButton>
+                        
+                    </h:panelGroup>
+                <h:dataTable id="book_list" value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="">
+                    
                     <h:column>
+                        <h:form rendered="#{b.isBookChecked or !searchController.editMode}">
                         <div class='book_image'>
                             <h:graphicImage value="/ImageServlet?book_id=#{b.bookId}" height="160" width="120"/>
                         </div>
+                        </h:form>    
                     </h:column>
-                    
                     <h:column>
-                        <div class='book_info'>
-                            <p> <h:outputLink value="#{request.contextPath}/ContentServlet">
+                        <h:form rendered="#{b.isBookChecked or !searchController.editMode}">
+                        <div class="book_details">
+                            <p>
+                                <h:outputLink value="#{request.contextPath}/ContentServlet" rendered="#{!searchController.editMode}">
                                     <h:outputText value="#{b.name}"/>
                                     <f:param name="download" value="false"/>
                                     <f:param name="book_id" value="#{b.bookId}"/>
-                                   
-                                </h:outputLink></p>
-                            <p><strong>#{msg.searh_author}:</strong> #{b.author}</p>
-                            <p><strong>#{msg.page_count}: </strong>#{b.pageCount}</p>
-                            <p><strong>ISBN: #{b.isbn}</strong></p>
-                            <p><strong>#{msg.publish_date}: </strong>#{b.publishDate}</p>
-                            <p><strong>#{msg.publisher}: </strong>#{b.publisher}</p>
-                            <p><strong>#{msg.genre}:</strong> #{b.genre}</p> 
-                            <p><h:outputLink value="#{request.contextPath}/ContentServlet" target="_blank">
+                                </h:outputLink>
+                                <h:inputText value="#{b.name}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <strong>#{msg.searh_author}:</strong> 
+                                <h:outputText value="#{b.author}" rendered="#{!searchController.editMode}"/>
+                                <h:inputText value="#{b.author}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <strong>#{msg.page_count}: </strong>
+                                <h:outputText value="#{b.pageCount}" rendered="#{!searchController.editMode}"/>
+                                <h:inputText value="#{b.pageCount}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <strong>ISBN:</strong>
+                                <h:outputText value="#{b.isbn}" rendered="#{!searchController.editMode}"/>
+                                <h:inputText value="#{b.isbn}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <strong>#{msg.publish_date}: </strong>
+                                
+                                <h:outputText value="#{b.publishDate}" rendered="#{!searchController.editMode}"/>
+                                <h:inputText value="#{b.publishDate}" rendered="#{searchController.editMode}"/>
+                                
+                            </p>
+                            <p>
+                                <strong>
+                                    #{msg.publisher}: </strong>
+                                    
+                                    <h:outputText value="#{b.publisher}" rendered="#{!searchController.editMode}"/>
+                                    <h:inputText value="#{b.publisher}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <strong>#{msg.genre}:</strong> 
+                                <h:outputText value="#{b.genre}" rendered="#{!searchController.editMode}"/>
+                                <h:inputText value="#{b.genre}" rendered="#{searchController.editMode}"/>
+                            </p>
+                            <p>
+                                <h:outputLink value="#{request.contextPath}/ContentServlet" target="_blank" rendered="#{!searchController.editMode}">
                                     <h:outputText value="#{msg.download}"/>
                                     <f:param name="book_id" value="#{b.bookId}"/>
                                     <f:param name="download" value="true"/>
                                     <f:param name="book_name" value="#{b.name}"/>
-                            </h:outputLink>
+                                </h:outputLink>
                             </p>
                         </div>
+                        </h:form>
                     </h:column>
                     <h:column>
+                        <h:form rendered="#{b.isBookChecked or !searchController.editMode}">
                         <div class='book_details'>
                             <p><strong>#{msg.description}</strong></p>
-                            <p>#{b.description}</p>
+                            <p>
+                                <h:outputText value="#{b.description}" rendered="#{!searchController.editMode}"/>
+                                <h:inputTextarea value="#{b.description}" rendered="#{searchController.editMode}" />
+                            </p>
                         </div>
+                        </h:form>
+                    </h:column>
+                   
+                    <h:column>
+                        <h:form id="check_form">
+                        <h:selectBooleanCheckbox value="#{b.isBookChecked}" rendered="#{!searchController.editMode}">
+                            
+                            <f:ajax event="click" render=":book_view" listener="#{searchController.changeBookCheck(b.isBookChecked)}"/>                          
+                        </h:selectBooleanCheckbox>
+                        </h:form>
                     </h:column>
                 </h:dataTable>
-                
-                
-                
+                </h:form>      
             </ui:define>
         </ui:composition>
     </h:body>

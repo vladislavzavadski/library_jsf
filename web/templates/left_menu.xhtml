@@ -18,15 +18,17 @@ and open the template in the editor.
         <ui:composition>
             <h4>#{msg.genres}</h4>
             <div class="genres">
+                <h:form id="genre_ff">
                 <ui:repeat value="#{genreController.genrelist}" var="g">
-                    <h:form id="genre_ff">
-                        <h:commandLink id="link"  value="#{g.name}" styleClass="#{g.id==searchController.currentGenre?'selected_link':''}">
+                    
+                       <h:commandLink id="link"  value="#{g.name}" styleClass="#{g.id==searchController.currentGenre?'selected_link':''}">
                             <f:param name="genre_id" value="#{g.id}"/>
-                            <f:ajax event="click" render="genre_ff :book_list :booksCount :let_menu :pages1 :pages2 :search_ff"  listener="#{searchController.fillBooksByGenre()}"/>
+                            <f:ajax event="click" render="@form :book_view:book_list :booksCount :let_menu :pages1 :pages2 :search_ff"  listener="#{searchController.fillBooksByGenre()}"/>
                         </h:commandLink>
                         
-                    </h:form>
+                    
                 </ui:repeat>
+                    </h:form>
             </div>
         </ui:composition>    
     </h:body>
