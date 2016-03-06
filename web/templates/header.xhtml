@@ -49,7 +49,7 @@ and open the template in the editor.
                     <h:selectOneMenu value="#{searchController.searchType}">
                         <f:selectItems value="${searchTypeController.searchList}"/>
                     </h:selectOneMenu>
-                    <f:ajax event="click" execute="search_button" render=":book_view:book_list :booksCount :genre_ff :pages1 :pages2 :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
+                    <f:ajax event="click" execute="search_button" render=":book_view :booksCount :genre_ff  :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
                 </h:form>
                
 
@@ -60,7 +60,7 @@ and open the template in the editor.
                     <ui:repeat value="#{searchController.russianLetters}" var="letter">
                         <h:commandLink value='#{letter}' styleClass="#{searchController.currentLetter.charAt(0)==letter?'selected_letter':''}">
                             <f:param name="letter" value="#{letter}"/>
-                            <f:ajax event="click" render="let_menu :book_view:book_list :booksCount :genre_ff :pages1 :pages2 :search_ff" listener="#{searchController.fillBooksByLetter()}"/>
+                            <f:ajax event="click" render="let_menu :book_view :booksCount :genre_ff :search_ff" listener="#{searchController.fillBooksByLetter()}"/>
                         </h:commandLink>
                     </ui:repeat>
                 </h:form>

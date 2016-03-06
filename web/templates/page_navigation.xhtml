@@ -18,7 +18,7 @@ and open the template in the editor.
         <ui:composition>
                <div class="pager">
                     
-                   <h:form  rendered="#{searchController.totalBookNumber>searchController.booksOnPage}">
+                <!--   <h:form  rendered="#{searchController.totalBookNumber>searchController.booksOnPage and !searchController.editMode}">
                        #{msg.pages}
                         <ui:repeat value="#{searchController.pageNumber}" var="page">
                             <h:commandLink   value="#{page}" styleClass="#{page==searchController.currentPageNumber?'selected_page':''}" >
@@ -27,7 +27,7 @@ and open the template in the editor.
                             </h:commandLink>
                             
                         </ui:repeat>
-                    </h:form>
+                    </h:form>-->
                     
                 </div>
         </ui:composition>    

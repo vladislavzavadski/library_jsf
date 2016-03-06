@@ -57,7 +57,6 @@ public class SearchController implements Serializable {
     }
     
     public void changeBookCheck(boolean flag){
-      // Map<String, String> map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
        if(flag){
            checkedBooks++;
        }
@@ -112,6 +111,8 @@ public class SearchController implements Serializable {
     }
     
     private void fillBooksBySQL(String sql){
+        checkedBooks=0;
+       // this.switchEdit();
         try {
             Connection con =  Database.getConnection();
             Statement stmt = con.createStatement();

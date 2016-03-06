@@ -23,7 +23,7 @@ and open the template in the editor.
                     
                        <h:commandLink id="link"  value="#{g.name}" styleClass="#{g.id==searchController.currentGenre?'selected_link':''}">
                             <f:param name="genre_id" value="#{g.id}"/>
-                            <f:ajax event="click" render="@form :book_view:book_list :booksCount :let_menu :pages1 :pages2 :search_ff"  listener="#{searchController.fillBooksByGenre()}"/>
+                            <f:ajax event="click" render="@form :book_view :booksCount :let_menu  :search_ff"  listener="#{searchController.fillBooksByGenre()}"/>
                         </h:commandLink>
                         
                     
