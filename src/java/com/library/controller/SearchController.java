@@ -365,8 +365,16 @@ public class SearchController implements Serializable {
         }
 
         this.switchEdit();
-            
+        this.stop();    
        
+    }
+    
+    private void stop(){
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void showPage(){

@@ -13,8 +13,12 @@
         <h:head>
             <title>TODO supply a title</title>
             <h:outputStylesheet library="css" name="style_main.css"  />
+            <h:outputScript library="js" name="library.js"/>
         </h:head>
         <h:body>
+            <div id="loading_wrapper">
+                <p>#{msg.saving}...</p>
+            </div>
             <div class="container">
                 <div class="header">
                     <ui:insert name="header">
