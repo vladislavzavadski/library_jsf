@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.event.ValueChangeEvent;
 import javax.naming.NamingException;
 /**
  *
@@ -34,6 +35,10 @@ public class SearchController implements Serializable {
     private ArrayList<Book> currentBookList;
     private ArrayList<Integer> pageNumber;
     private int booksOnPage = 2;
+
+    public void setBooksOnPage(int booksOnPage) {
+        this.booksOnPage = booksOnPage;
+    }
     private int totalBookNumber;
     private int currentGenre = -1;
     private String currentLetter = " ";
@@ -54,6 +59,13 @@ public class SearchController implements Serializable {
     
     public void switchEdit(){
         editMode=!editMode;
+    }
+    
+    public void changeBooksNumberOnPage(ValueChangeEvent e){
+        this.stop();
+        currentPageNumber = 1;
+        booksOnPage = Integer.parseInt(e.getNewValue().toString());
+        fillBooksBySQL(lastSqlQuery);
     }
     
     public void changeBookCheck(boolean flag){
@@ -105,7 +117,8 @@ public class SearchController implements Serializable {
     
     private void fillNumberArray(int rowNumber){
         pageNumber = new ArrayList<>();
-        for(int i=1; i<=(rowNumber/2)+((rowNumber%2==1)?1:0); i++){
+        
+        for(int i=1; i<=(rowNumber/booksOnPage)+((rowNumber%booksOnPage==0)?0:1); i++){
             pageNumber.add(i);
         }
     }
@@ -125,7 +138,7 @@ public class SearchController implements Serializable {
             if(rs.getRow() > booksOnPage){
                 //TODO:rghrehge///////////////////////////////////////////////////////////////////////////
                 
-                sql+=(" limit " + ((currentPageNumber-1)*2)+","+booksOnPage);
+                sql+=(" limit " + ((currentPageNumber-1)*booksOnPage)+","+booksOnPage);
             }
                 rs = stmt.executeQuery(sql);
             
