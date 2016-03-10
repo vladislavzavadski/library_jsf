@@ -36,7 +36,7 @@ and open the template in the editor.
                     </p>
                     
                      <h5>#{msg.welcome}, #{user.name}</h5>
-                    <h:commandLink action="#{loginController.exit()}" value="#{msg.exit}"/>
+                    <h:commandLink action="#{user.logout()}" value="#{msg.exit}"/>
                     
                 </h:form>
             </div>

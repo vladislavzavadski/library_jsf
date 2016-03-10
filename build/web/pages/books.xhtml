@@ -43,7 +43,7 @@
                         <f:selectItem itemValue="10"/>
                         <f:ajax event="change" onevent="showProgress" execute="@form" render="@form"/>
                     </h:selectOneMenu>
-                    <h:panelGroup id="admin_tools">
+                    <h:panelGroup id="admin_tools" rendered="#{user.userAdmin}">
                         <h:commandLink rendered="#{!searchController.editMode}">
                             <h:graphicImage library="images" name="en.png"/>
                             <h:outputText value="#{msg.add}"/>
@@ -136,7 +136,7 @@
                         </h:column>
                         <h:column>
                             <h:form id="check_form">
-                                <h:selectBooleanCheckbox value="#{b.isBookChecked}" rendered="#{!searchController.editMode}">
+                                <h:selectBooleanCheckbox value="#{b.isBookChecked}" rendered="#{!searchController.editMode and user.userAdmin}">
                                     <f:ajax event="click" render=":book_view" listener="#{searchController.changeBookCheck(b.isBookChecked)}"/>
                                 </h:selectBooleanCheckbox>
                             </h:form>

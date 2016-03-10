@@ -13,42 +13,62 @@ and open the template in the editor.
     
     <h:head>
         <title>#{msg.title}</title>
-        <h:outputStylesheet library="css" name="style_index.css"  />
+        <h:outputStylesheet library="css" name="style_index.css" />
+        
+        <!--<h:outputScript library="js" name="library.js"/>-->
     </h:head>
     <h:body>
+            <div id="loading_wrapper">
+                <p>#{msg.saving}...</p>
+            </div>
         <f:view locale="#{localeChanger.locale}">
         <div class="main">
             <p><h:form>
-                    <h:commandLink action='#{localeChanger.setLocale("en")}'>
+                <h:commandLink>
                     <h:graphicImage library="images" name="en.png"/>
+                    <f:ajax event="click" render=":title :login_form :footer :info" listener='#{localeChanger.setLocale("en")}'/>
                 </h:commandLink>
                     
-                    <h:commandLink action='#{localeChanger.setLocale("ru")}'>
+                <h:commandLink >
                     <h:graphicImage library="images" name="ru.png"/>
+                    <f:ajax event="click" render=":title :login_form :footer :info" listener='#{localeChanger.setLocale("ru")}'/>
                 </h:commandLink>    
             </h:form>
             </p>
             <div class="content">
                 <p class="title"><h:graphicImage library="images" name="lib.png"/></p>
-                <p class="title">#{msg.title}</p>
+                <p class="title"><h:outputText value="#{msg.title}" id="title"/></p>
             </div>
             <div class="login_div">
-                <p class="title">#{msg.inp_info}</p>
-                <h:form styleClass="login_form">
+                <p class="title"><h:outputText value="#{msg.inp_info}" id="info"/></p>
+                <h:form styleClass="login_form" id="login_form">
                     #{msg.name}
                     <h:inputText id="username" value="#{user.name}" required="true" requiredMessage="#{msg.empty_field}">
                         <f:validator validatorId="com.library.validators.IndexValidator"/>
-                        <f:ajax event="keyup" render="loginError"/>
+                        <f:ajax event="keyup" render="usernameInput"/>
                     </h:inputText>
-                    <h:commandButton action="pages/books?faces-redirect=true" value="#{msg.enter}">
-                       
+                    <br/>
+                                <td width="100" >
+                                    <div id="loading_wrapper">
+                                        <h:graphicImage library="images" name="splash.gif"/>
+                                        
+                                    </div>
+                                </td>
+                    
+                    #{msg.password}   
+                    <h:inputSecret id="password" value="#{user.password}" required="true" requiredMessage="#{msg.empty_password}"/>
+                    <br/>
+                    <h:commandButton action="#{user.login()}" value="#{msg.enter}" styleClass="login_button">
+                        <f:ajax onevent="showProgress" execute="@form" render="@form" /> 
                     </h:commandButton>
-                    <p><h:message id="loginError" for="username" styleClass="error"/></p>
+                    <p><h:message id="usernameInput" for="username" styleClass="error"/></p>
+                    <p><h:message id="loginError" for="login_form" styleClass="error"/></p>
+                    <p><h:message id="passwordInput" for="password" styleClass="error"/></p> 
                 </h:form>
             </div>  
             <div class="footer">
-            #{msg.footer}
-        </div>
+                <h:outputText value="#{msg.footer}" id="footer"/>
+            </div>
         </div>
     </f:view>        
     </h:body>
