@@ -54,11 +54,6 @@ public class User {
     public void login(){
         HttpServletRequest httpServletRequest = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             if(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser()!=null){
                httpServletRequest.logout();
             }

@@ -5,19 +5,12 @@
  */
 package com.library.controller;
 
-import com.library.database.Database;
-import com.library.genre.Genre;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.library.Database.DataHelper;
+import com.library.entity.Genre;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.naming.NamingException;
 
 /**
  *
@@ -30,20 +23,24 @@ public class GenreController {
 
     public ArrayList<Genre> getGenrelist(){
         if(genreList==null){
-            genreList = new ArrayList();
-            try {
+            genreList = (ArrayList<Genre>) DataHelper.getInstance().getAllGenres();
+           /* try {
                 Connection con = Database.getConnection();
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("select *from genre");
                 while(rs.next()){
-                    genreList.add(new Genre(rs.getString("name"), rs.getLong("id")));
+                    Genre genre = new Genre();
+                    genre.setName(rs.getString("name"));
+                    genre.setId(rs.getLong("id"));
+                    genreList.add(genre);
                 }
                 con.close();
                 stmt.close();
                 rs.close();
             } catch (NamingException | SQLException ex) {
                 Logger.getLogger(GenreController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
+            
             Collections.sort(genreList);
             return genreList;
         }

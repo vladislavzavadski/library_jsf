@@ -5,7 +5,9 @@
  */
 package com.library.controller;
 
-import com.library.database.Database;
+import com.library.Database.DataHelper;
+import com.library.entity.Book;
+import com.library.enums.QueryType;
 import com.library.enums.SearchType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,16 +15,10 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import com.library.usebean.Book;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.ValueChangeEvent;
-import javax.naming.NamingException;
+
 /**
  *
  * @author Владислав
@@ -35,19 +31,19 @@ public class SearchController implements Serializable {
     private ArrayList<Book> currentBookList;
     private ArrayList<Integer> pageNumber;
     private int booksOnPage = 2;
-
-    public void setBooksOnPage(int booksOnPage) {
-        this.booksOnPage = booksOnPage;
-    }
+    private QueryType queryType;
     private int totalBookNumber;
-    private int currentGenre = -1;
+    private long currentGenre = -1;
     private String currentLetter = " ";
-    private String lastSqlQuery;
     private boolean editMode;
     private String name;
     private int checkedBooks;
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public void setBooksOnPage(int booksOnPage) {
+        this.booksOnPage = booksOnPage;
     }
 
     public String getName() {
@@ -61,11 +57,34 @@ public class SearchController implements Serializable {
         editMode=!editMode;
     }
     
-    public void changeBooksNumberOnPage(ValueChangeEvent e){
+   public void changeBooksNumberOnPage(ValueChangeEvent e){
         this.stop();
         currentPageNumber = 1;
         booksOnPage = Integer.parseInt(e.getNewValue().toString());
-        fillBooksBySQL(lastSqlQuery);
+        fillBooksByPrevQuery();
+    }
+   
+    private void fillBooksByPrevQuery(){
+        if(queryType==QueryType.All){
+           currentBookList = (ArrayList<Book>) DataHelper.getInstance().getAllBooks((currentPageNumber-1)*booksOnPage, booksOnPage);
+
+        }
+        if(queryType==QueryType.Genre){
+           currentBookList =  (ArrayList<Book>) DataHelper.getInstance().getBooksByGenre(currentGenre, (currentPageNumber-1)*booksOnPage, booksOnPage);
+        }
+        if(queryType==QueryType.Letter){
+            currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBooksByLetter(currentLetter.charAt(0), (currentPageNumber-1)*booksOnPage, booksOnPage);
+        }
+        if(queryType==QueryType.Search){
+            if(searchType==SearchType.Author){
+                currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBookByAuthor(searchString, (currentPageNumber-1)*booksOnPage, booksOnPage);
+            }
+            if(searchType==SearchType.Name){
+                currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBookByName(searchString, (currentPageNumber-1)*booksOnPage, booksOnPage);
+            }
+        }
+        totalBookNumber = DataHelper.getInstance().getTotalBooksNumber();
+        fillNumberArray(totalBookNumber);
     }
     
     public void changeBookCheck(boolean flag){
@@ -89,7 +108,7 @@ public class SearchController implements Serializable {
         return pageNumber;
     }
     public SearchController(){
-        this.fillBooksAll();
+        fillBooksAll();
         editMode=false;
         currentLetter = " ";
         checkedBooks=0;
@@ -123,126 +142,38 @@ public class SearchController implements Serializable {
         }
     }
     
-    private void fillBooksBySQL(String sql){
-        checkedBooks=0;
-       // this.switchEdit();
-        try {
-            Connection con =  Database.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            currentBookList = new ArrayList<>();
-            lastSqlQuery = sql;
-            rs.last();
-            totalBookNumber = rs.getRow();
-            fillNumberArray(rs.getRow());
-            if(rs.getRow() > booksOnPage){
-                //TODO:rghrehge///////////////////////////////////////////////////////////////////////////
-                
-                sql+=(" limit " + ((currentPageNumber-1)*booksOnPage)+","+booksOnPage);
-            }
-                rs = stmt.executeQuery(sql);
-            
-            while(rs.next()){
-                Book book = new Book();
-                book.setAuthor(rs.getString("author"));
-                book.setBookId(rs.getLong("id"));
-                book.setPageCount(rs.getInt("page_count"));
-                book.setImage(rs.getBytes("image"));
-                book.setName(rs.getString("name"));
-                book.setIsbn(rs.getString("isbn"));
-                book.setGenre(rs.getString("genre"));
-                book.setDescription(rs.getString("descr"));
-                book.setPublisher(rs.getString("publisher"));
-                book.setPublishDate(rs.getInt("publish_year"));
-                currentBookList.add(book);
-            }
-            con.close();
-            stmt.close();
-            rs.close();
-        } catch (NamingException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-
     public int getTotalBookNumber() {
         return totalBookNumber;
     }
     
     public byte[] getPdf(long id){
-        byte[] bytePdf = null;
-        try {
-            Connection con = Database.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = null;
-            try {
-                rs = stmt.executeQuery("select content from book where id=" + id);
-            } catch (SQLException ex) {
-                Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            while(rs.next()){
-                bytePdf = rs.getBytes("content");
-            }
-            con.close();
-            stmt.close();
-            rs.close();
-            return bytePdf;
-        } catch (SQLException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NamingException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return bytePdf;
+        return DataHelper.getInstance().getContent(id);
     }
     
     public byte[] getImage(long id){
-        byte[] byteImage = null;
-        try {
-            Connection con = Database.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = null;
-            try {
-                rs = stmt.executeQuery("select image from book where id=" + id);
-            } catch (SQLException ex) {
-                Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            while(rs.next()){
-                byteImage = rs.getBytes("image");
-            }
-            con.close();
-            stmt.close();
-            rs.close();
-            return byteImage;
-        } catch (SQLException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NamingException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return byteImage;
+        return DataHelper.getInstance().getImage(id);
     }
     
     public void fillBooksByGenre(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         currentPageNumber = 1;
         currentLetter = " ";
-        int id = Integer.parseInt(params.get("genre_id"));
+        long id = Long.parseLong(params.get("genre_id"));
         currentGenre = id;
-        fillBooksBySQL("select b.id,b.name,b.isbn,b.page_count,b.publish_year, p.name as publisher, a.fio as author, g.name as genre, b.descr, b.image from book b "
-                + "inner join author a on b.author_id=a.id "
-                + "inner join genre g on b.genre_id=g.id "
-                + "inner join publisher p on b.publisher_id=p.id "
-                + "where genre_id=" + id + " order by b.name ");
+        queryType = QueryType.Genre;
+        currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBooksByGenre(id, 0, booksOnPage);
+        totalBookNumber = DataHelper.getInstance().getTotalBooksNumber();
+        fillNumberArray(totalBookNumber);
     }
     
     private void fillBooksAll() {
         currentPageNumber = 1;
         currentGenre = -1;
         currentLetter = " ";
-        fillBooksBySQL("select b.id,b.name,b.isbn,b.page_count,b.publish_year, p.name as publisher, b.descr, "
-                + "a.fio as author, g.name as genre, b.image from book b inner join author a on b.author_id=a.id "
-                + "inner join genre g on b.genre_id=g.id inner join publisher p on b.publisher_id=p.id order by b.name");
+        queryType = QueryType.All;
+        currentBookList = (ArrayList<Book>) DataHelper.getInstance().getAllBooks(0, booksOnPage);
+        totalBookNumber = DataHelper.getInstance().getTotalBooksNumber();
+        fillNumberArray(totalBookNumber);
     }
     
         public Character[] getRussianLetters() {
@@ -290,11 +221,10 @@ public class SearchController implements Serializable {
         currentGenre = -1;
         String let = params.get("letter");
         currentLetter = let;
-        fillBooksBySQL("select b.id,b.name,b.isbn,b.page_count,b.publish_year, p.name as publisher, a.fio as author, g.name as genre, b.descr, b.image from book b "
-                + "inner join author a on b.author_id=a.id "
-                + "inner join genre g on b.genre_id=g.id "
-                + "inner join publisher p on b.publisher_id=p.id "
-                + "where substr(b.name,1,1)='" + let + "' order by b.name ");
+        queryType = QueryType.Letter;
+        currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBooksByLetter(let.charAt(0), 0, booksOnPage);
+        totalBookNumber = DataHelper.getInstance().getTotalBooksNumber();
+        fillNumberArray(totalBookNumber);
     } 
     
     public void fillBooksBySearch() {
@@ -305,31 +235,20 @@ public class SearchController implements Serializable {
             fillBooksAll();
             return;
         }
-
-        StringBuilder sql = new StringBuilder("select b.descr, b.id,b.name,b.isbn,b.page_count,b.publish_year, p.name as publisher, a.fio as author, g.name as genre, b.image from book b "
-                + "inner join author a on b.author_id=a.id "
-                + "inner join genre g on b.genre_id=g.id "
-                + "inner join publisher p on b.publisher_id=p.id ");
-
-        if (searchType == SearchType.Author) {
-            sql.append("where lower(a.fio) like '%" + searchString.toLowerCase() + "%' order by b.name ");
-
-        } else if (searchType == SearchType.Name) {
-            sql.append("where lower(b.name) like '%" + searchString.toLowerCase() + "%' order by b.name ");
-        }
-
-
-
-        fillBooksBySQL(sql.toString());
-
-
+        queryType = QueryType.Search;
+        if(searchType==SearchType.Author)
+           currentBookList =  (ArrayList<Book>) DataHelper.getInstance().getBookByAuthor(searchString, 0, booksOnPage);
+        if(searchType==SearchType.Name)
+           currentBookList = (ArrayList<Book>) DataHelper.getInstance().getBookByName(searchString, 0, booksOnPage);
+        totalBookNumber = DataHelper.getInstance().getTotalBooksNumber();
+        fillNumberArray(totalBookNumber);
     }
 
     public String getCurrentLetter() {
         return currentLetter;
     }
 
-    public int getCurrentGenre() {
+    public long getCurrentGenre() {
         return currentGenre;
     }
 
@@ -341,7 +260,7 @@ public class SearchController implements Serializable {
         return searchString;
     }
     
-    public void saveBookChanges(){
+   /* public void saveBookChanges(){
         PreparedStatement prepStmt = null;
         Connection conn=null;
         
@@ -355,10 +274,10 @@ public class SearchController implements Serializable {
                 prepStmt.setString(2, book.getIsbn());
 //                prepStmt.setString(3, book.getAuthor());
                 prepStmt.setInt(3, book.getPageCount());
-                prepStmt.setInt(4, book.getPublishDate());
+                prepStmt.setInt(4, book.getPublishYear());
 //                prepStmt.setString(6, book.getPublisher());
-                prepStmt.setString(5, book.getDescription());
-                prepStmt.setLong(6, book.getBookId());
+                prepStmt.setString(5, book.getDescr());
+                prepStmt.setLong(6, book.getId());
                 prepStmt.addBatch();               
            }
            prepStmt.executeBatch();
@@ -380,7 +299,7 @@ public class SearchController implements Serializable {
         this.switchEdit();
         this.stop();    
        
-    }
+    }*/
     
     private void stop(){
         try {
@@ -394,6 +313,6 @@ public class SearchController implements Serializable {
         Map<String, String> params= FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         currentPageNumber = Integer.parseInt(params.get("page_number"));
         checkedBooks=0;
-        fillBooksBySQL(lastSqlQuery);
+        fillBooksByPrevQuery();
     }
 }

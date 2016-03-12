@@ -45,11 +45,13 @@ and open the template in the editor.
                     <h:inputText id="search_request" styleClass="search_string" value='#{searchController.searchString}'>
                         <f:ajax event="change"/>
                     </h:inputText>
-                    <h:commandButton id="search_button" styleClass="search_button" value="#{msg.search}"/>
+                    <h:commandButton id="search_button" styleClass="search_button" value="#{msg.search}">
+                        <f:ajax event="click" execute="@form" render=":book_view :booksCount :genre_ff  :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
+                    </h:commandButton>
                     <h:selectOneMenu value="#{searchController.searchType}">
                         <f:selectItems value="${searchTypeController.searchList}"/>
                     </h:selectOneMenu>
-                    <f:ajax event="click" execute="search_button" render=":book_view :booksCount :genre_ff  :let_menu" listener="#{searchController.fillBooksBySearch()}"/>
+                    
                 </h:form>
                
 
