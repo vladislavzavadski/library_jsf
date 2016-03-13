@@ -12,11 +12,13 @@ import com.library.entity.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 
 /**
  *
@@ -45,10 +47,24 @@ public class DataHelper {
         return sessionFactory.getCurrentSession();
     }
     
+    private Criteria getCriteriaWithProjection(){
+        return getSession().createCriteria(Book.class).
+                setProjection(Projections.projectionList().
+                add(Projections.property("id"), "id").
+                add(Projections.property("isbn"), "isbn").
+                add(Projections.property("name"), "name").
+                add(Projections.property("author"), "author").
+                add(Projections.property("genre"), "genre").
+                add(Projections.property("publisher"), "publisher").
+                add(Projections.property("descr"), "descr").
+                add(Projections.property("publishYear"), "publishYear").
+                add(Projections.property("pageCount"), "pageCount")).addOrder(Order.asc("name"));
+    }
+    
     public List<Book> getAllBooks(int firstNote, int notesNumber){
         getSession().beginTransaction();
-        totalBooksNumber = getSession().createCriteria(Book.class).list().size();
-        List<Book> books = getSession().createCriteria(Book.class).addOrder(Order.asc("name")).setFirstResult(firstNote).setMaxResults(notesNumber).list();
+        totalBooksNumber = getSession().createCriteria(Book.class).setProjection(Projections.property("id")).list().size();
+        List<Book> books = getCriteriaWithProjection().setFirstResult(firstNote).setMaxResults(notesNumber).setResultTransformer(Transformers.aliasToBean(Book.class)).list();
         getSession().getTransaction().commit();
         return books;
     }
@@ -71,8 +87,8 @@ public class DataHelper {
     
     public List<Book> getBooksByGenre(Long genreId, int firstNote, int notesNumber){
         getSession().beginTransaction();
-        totalBooksNumber = getSession().createCriteria(Book.class).add(Restrictions.eq("genre.id", genreId)).list().size();
-        List<Book> books = getSession().createCriteria(Book.class).add(Restrictions.eq("genre.id", genreId)).addOrder(Order.asc("name")).setFirstResult(firstNote).setMaxResults(notesNumber).list();
+        totalBooksNumber = getSession().createCriteria(Book.class).add(Restrictions.eq("genre.id", genreId)).setProjection(Projections.property("id")).list().size();
+        List<Book> books = getCriteriaWithProjection().add(Restrictions.eq("genre.id", genreId)).setFirstResult(firstNote).setMaxResults(notesNumber).setResultTransformer(Transformers.aliasToBean(Book.class)).list();
         getSession().getTransaction().commit();
         return books;
 
@@ -87,9 +103,12 @@ public class DataHelper {
     }
     
     public List<Book> getBookByAuthor(String authorName, int firstNote, int notesNumber){
-        
-        return getBookList("author", authorName, MatchMode.ANYWHERE, firstNote, notesNumber);
-        
+        getSession().beginTransaction();
+        totalBooksNumber = getSession().createCriteria(Book.class).setProjection(Projections.property("id")).createCriteria("author").add(Restrictions.ilike("fio", authorName, MatchMode.ANYWHERE)).list().size();
+        List<Book> books = getCriteriaWithProjection()
+                .createCriteria("author").add(Restrictions.ilike("fio", authorName, MatchMode.ANYWHERE)).setFirstResult(firstNote).setMaxResults(notesNumber).setResultTransformer(Transformers.aliasToBean(Book.class)).list();
+        getSession().getTransaction().commit();
+        return books;
     }
     
     public byte[] getContent(Long id){
@@ -110,8 +129,8 @@ public class DataHelper {
     
     private List<Book> getBookList(String field, String value, MatchMode matchMode, int firstNote,int notesNumber){
         getSession().beginTransaction();
-        totalBooksNumber = getSession().createCriteria(Book.class).add(Restrictions.ilike(field, value, matchMode)).list().size();
-        List<Book> books = getSession().createCriteria(Book.class).add(Restrictions.ilike(field, value, matchMode)).addOrder(Order.asc("name")).setFirstResult(firstNote).setMaxResults(notesNumber).list();
+        totalBooksNumber = getSession().createCriteria(Book.class).setProjection(Projections.property("id")).add(Restrictions.ilike(field, value, matchMode)).list().size();
+        List<Book> books = getCriteriaWithProjection().add(Restrictions.ilike(field, value, matchMode)).setFirstResult(firstNote).setMaxResults(notesNumber).setResultTransformer(Transformers.aliasToBean(Book.class)).list();
         getSession().getTransaction().commit();
         return books;
 
