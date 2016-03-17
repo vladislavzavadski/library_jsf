@@ -6,11 +6,9 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/library?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.show_sql">true</property>
-    <property name="hibernate.connection.datasource">jdbc/Library</property>
+    <property name="hibernate.connection.password">root</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
-    <property name="hibernate.connection.password">root</property>
     <mapping resource="com/library/entity/Genre.hbm.xml"/>
     <mapping resource="com/library/entity/Publisher.hbm.xml"/>
     <mapping resource="com/library/entity/Author.hbm.xml"/>

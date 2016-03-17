@@ -6,6 +6,7 @@
 package com.library.controller;
 
 import com.library.Database.DataHelper;
+import com.library.entity.Author;
 import com.library.entity.Book;
 import com.library.enums.QueryType;
 import com.library.enums.SearchType;
@@ -38,6 +39,16 @@ public class SearchController implements Serializable {
     private boolean editMode;
     private String name;
     private int checkedBooks;
+    private ArrayList<Author> authors;
+    private int authorNum = 5;
+
+    public void setAuthorNum(int authorNum) {
+        this.authorNum = authorNum;
+    }
+
+    public int getAuthorNum() {
+        return authorNum;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -109,9 +120,18 @@ public class SearchController implements Serializable {
     }
     public SearchController(){
         fillBooksAll();
+        authors = (ArrayList<Author>) DataHelper.getInstance().getAllAuthors();
         editMode=false;
         currentLetter = " ";
         checkedBooks=0;
+    }
+
+    public void setAuthors(ArrayList<Author> authors) {
+        this.authors = authors;
+    }
+
+    public ArrayList<Author> getAuthors() {
+        return authors;
     }
 
     public void setCheckedBooks(int checkedBooks) {
@@ -260,46 +280,11 @@ public class SearchController implements Serializable {
         return searchString;
     }
     
-   /* public void saveBookChanges(){
-        PreparedStatement prepStmt = null;
-        Connection conn=null;
-        
-        try{
-           conn=Database.getConnection();
-           prepStmt = conn.prepareStatement("update book set name=?, isbn=?, page_count=?, publish_year=?, descr=? where id=?");
-           for(Book book: currentBookList){
-                prepStmt.setString(1, book.getName());
-                prepStmt.setString(2, book.getIsbn());
-                prepStmt.setString(1, book.getName());
-                prepStmt.setString(2, book.getIsbn());
-//                prepStmt.setString(3, book.getAuthor());
-                prepStmt.setInt(3, book.getPageCount());
-                prepStmt.setInt(4, book.getPublishYear());
-//                prepStmt.setString(6, book.getPublisher());
-                prepStmt.setString(5, book.getDescr());
-                prepStmt.setLong(6, book.getId());
-                prepStmt.addBatch();               
-           }
-           prepStmt.executeBatch();
-        } catch (NamingException | SQLException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-            try {
-                if (prepStmt != null) {
-                    prepStmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
+    public void saveBookChanges(){
+        DataHelper.getInstance().update(this.currentBookList);
         this.switchEdit();
-        this.stop();    
-       
-    }*/
+        /////////////////////////////
+    }
     
     private void stop(){
         try {

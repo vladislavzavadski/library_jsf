@@ -19,7 +19,7 @@ and open the template in the editor.
             <h4>#{msg.genres}</h4>
             <div class="genres">
                 <h:form id="genre_ff">
-                <ui:repeat value="#{genreController.genrelist}" var="g">
+                    <ui:repeat value="#{genreController.genrelist}" var="g">
                     
                        <h:commandLink id="link"  value="#{g.name}" styleClass="#{g.id==searchController.currentGenre?'selected_link':''}">
                             <f:param name="genre_id" value="#{g.id}"/>

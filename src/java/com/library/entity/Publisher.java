@@ -1,5 +1,5 @@
 package com.library.entity;
-// Generated 11.03.2016 18:42:23 by Hibernate Tools 4.3.1
+// Generated 17.03.2016 19:18:48 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -48,10 +48,17 @@ public class Publisher  implements java.io.Serializable {
     public void setBooks(Set books) {
         this.books = books;
     }
-
-
-
-
+    
+    @Override
+    public boolean equals(Object o){
+        return this.id.longValue()==((Publisher)o).getId().longValue();
+        
+    }
+    
+    @Override
+    public String toString(){
+        return name;
+    }
 }
 
 

@@ -5,13 +5,19 @@
  */
 package com.library.Database;
 
+import com.library.controller.SearchController;
 import com.library.entity.Author;
 import com.library.entity.Book;
 import com.library.entity.Genre;
 import com.library.entity.HibernateUtil;
+import com.library.entity.Publisher;
+import java.util.ArrayList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import java.util.List;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
@@ -35,7 +41,8 @@ public class DataHelper {
     private int totalBooksNumber = 0;
     
     private DataHelper(){
-        sessionFactory = HibernateUtil.getSessionFactory();       
+        sessionFactory = HibernateUtil.getSessionFactory();
+
     } 
     
     public static DataHelper getInstance(){
@@ -71,15 +78,22 @@ public class DataHelper {
     
     public List<Genre> getAllGenres(){
         getSession().beginTransaction();
-        List<Genre> genres = getSession().createCriteria(Genre.class).list();
+        List<Genre> genres = getSession().createCriteria(Genre.class).addOrder(Order.asc("name")).list();
         getSession().getTransaction().commit();
         return genres;
       
     }
     
+    public List<Publisher> getAllPublishers(){
+        getSession().beginTransaction();
+        List<Publisher> publishers = getSession().createCriteria(Publisher.class).addOrder(Order.asc("name")).list();
+        getSession().getTransaction().commit();
+        return publishers;
+    }
+    
     public List<Author> getAllAuthors(){
         getSession().beginTransaction();
-        List<Author> genres = getSession().createCriteria(Author.class).list();
+        List<Author> genres = getSession().createCriteria(Author.class).addOrder(Order.asc("fio")).list();
         getSession().getTransaction().commit();
         return genres;
 
@@ -134,6 +148,24 @@ public class DataHelper {
         getSession().getTransaction().commit();
         return books;
 
+    }
+    
+    public void update(ArrayList<Book> books){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        for(Book b: books){
+            //session.update(b);
+            if(b.isIsBookChecked()){
+                Book book = (Book)(session.createCriteria(Book.class).add(Restrictions.eq("id", b.getId())).uniqueResult());
+                b.setContent(book.getContent());
+                b.setImage(book.getImage());
+                session.merge(b);
+            }
+            
+        }
+        transaction.commit();
+        session.flush();
+        session.close();
     }
        
 }

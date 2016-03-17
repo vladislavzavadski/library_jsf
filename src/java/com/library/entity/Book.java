@@ -1,5 +1,5 @@
 package com.library.entity;
-// Generated 11.03.2016 18:42:23 by Hibernate Tools 4.3.1
+// Generated 17.03.2016 19:18:48 by Hibernate Tools 4.3.1
 
 
 
@@ -22,14 +22,13 @@ public class Book  implements java.io.Serializable {
      private String descr;
      private boolean isBookChecked;
 
-    public void setBookChecked(boolean bookChecked) {
-        this.isBookChecked = bookChecked;
+    public void setIsBookChecked(boolean isBookChecked) {
+        this.isBookChecked = isBookChecked;
     }
 
-    public boolean isBookChecked() {
+    public boolean isIsBookChecked() {
         return isBookChecked;
     }
-
     public Book() {
     }
 
@@ -133,10 +132,6 @@ public class Book  implements java.io.Serializable {
     public void setDescr(String descr) {
         this.descr = descr;
     }
-
-
-
-
 }
 
 
